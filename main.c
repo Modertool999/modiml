@@ -43,12 +43,23 @@ matrix* create_matrix(size_t rows, size_t cols) {
     return m;
 }
 
+
+/* Frees the matrix data and the matrix struct itself
+ * Does nothing if matrix is NULL
+ */
+void free_matrix(matrix* matrix) {
+    if (matrix == NULL) return;
+
+    free(matrix->data);
+    free(matrix);
+
+}
+
 /* Copies all entries from source matrix into destination matrix
  *
  * Requires: both matrices have the same rows and cols values and were created with create_matrix()
  * 
  * Returns: 0 on success, -1 if either matrix is NULL or if their dimensions do not match
- *
  */
 int copy_matrix(matrix* destination, const matrix* source) {
     if (destination == NULL || source == NULL) return -1;
@@ -60,12 +71,62 @@ int copy_matrix(matrix* destination, const matrix* source) {
     return 0;
 }
 
-void clear_matrix(matrix* matrix);
-void fill_matrix(matrix* matrix, float x);
-void scale_matrix(matrix* matrix, float const);
+/* Sets every entry in the matrix to x
+ * Does nothing if matrix or matrix->data is NULL
+ */
+void fill_matrix(matrix* matrix, float x) {
+    if (matrix == NULL || matrix->data == NULL) return;
 
-int32_t matrix_add(matrix* out, const matrix* a, const matrix* b);
-int32_t matrix_subtract(matrix* out, const matrix* a, const matrix* b);
+    size_t count = matrix->rows * matrix->cols;
+    for (size_t i = 0; i < count; i++) {
+        matrix->data[i] = x;
+    }
+}
+
+
+/* Multiplies every entry in the matrix by x.
+ * Does nothing if matrix or matrix->data is NULL.
+ */
+void scale_matrix(matrix* matrix, float x) {
+    if (matrix == NULL || matrix->data == NULL) return;
+
+    size_t count = matrix->rows * matrix->cols;
+    for (size_t i = 0; i < count; i++) {
+        matrix->data[i] *= x;
+    }
+}
+
+
+int32_t matrix_add(matrix* out, const matrix* a, const matrix* b) {
+    if (a->rows != b->rows || a->cols != b->cols) return -1;
+    if (out->rows != a->rows || out->cols != a->cols) return -1;
+
+    size_t size = out->rows * out->cols;
+    for (size_t i = 0; i < size; i++) {
+        out->data[i] *= a->data[i] + b->data[i];
+    }
+
+    return 0;
+
+}
+
+
+int32_t matrix_subtract(matrix* out, const matrix* a, const matrix* b) {
+     if (a->rows != b->rows || a->cols != b->cols) return -1;
+    if (out->rows != a->rows || out->cols != a->cols) return -1;
+
+    size_t size = out->rows * out->cols;
+    for (size_t i = 0; i < size; i++) {
+        out->data[i] *= a->data[i] - b->data[i];
+    }
+
+    return 0;
+
+}
+
+
+
+
 int32_t matrix_multiply(matrix* out, const matrix* a, matrix* b, int8_t zero_out, int8_t transpose_a, int8_t transpose_b);
 int32_t matrix_relu(matrix* out, const matrix* in);
 int32_t matrix_softmax(matrix* out, const matrix* in);
