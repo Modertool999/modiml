@@ -1,6 +1,5 @@
 #include <stdio.h>
-// 3rd party memory allocation so that I do not have to deal with tedious mallocs and free lol
-#include "mg_arena.h"
+
 
 
 typedef struct {
@@ -9,7 +8,9 @@ typedef struct {
     float data;
 } matrix;
 
-matrix* create_matrix(mg_arena* arena, uint32_t rows, uint32_t cols);
+matrix* create_matrix(mg_arena* arena, uint32_t rows, uint32_t cols) {
+    matrix* mat = 
+}
 void clear_matrix(matrix* matrix);
 void copy_matrix(matrix* destination, matrix* source);
 void fill_matrix(matrix* matrix, float x);
@@ -31,9 +32,8 @@ int32_t matrix_cross_entropy_add_gradeint(matrix* out, const matrix* p, const ma
 
 
 int main(void) {
-    mg_arena* perm_arena = mga_create(&(mga_desc){ .desired_max_size = MGA_GiB(1), .desired_block_size = MGA_MiB(1),});
     printf("hello world\n");
-    mga_destroy(perm_arena);
+
 
     return 0;
 }
