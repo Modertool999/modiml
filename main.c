@@ -21,6 +21,13 @@ int32_t matrix_multiply(matrix* out, const matrix* a, matrix* b, int8_t zero_out
 int32_t matrix_relu(matrix* out, const matrix* in);
 int32_t matrix_softmax(matrix* out, const matrix* in);
 
+// cost (loss) function
+int32_t matrix_cross_entropy(matrix* out, const matrix* p, const matrix* q);
+int32_t matrix_relu_add_graident(matrix* out, const matrix* in);
+int32_t matrix_softmax_add_gradient(matrix* out, const matrix* softmax_out);
+int32_t matrix_cross_entropy_add_gradeint(matrix* out, const matrix* p, const matrix* q);
+
+
 
 
 int main(void) {
