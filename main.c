@@ -15,13 +15,13 @@ typedef struct {
 #include <stdlib.h>
 
 /* Allocates a (rows, cols) matrix on the heap, returning a pointer to the matrix
-* Returns NULL if
- * - rows or cols is 0
- * - rows * cols would overflow
- * - malloc/calloc fails
 *
-* data is a contiguous 1D array of rows * cols floats, zero-initialized by calloc.
+* Requires: rows * cols to not overflow
 * Caller must free the returned matrix with free_matrix()
+* 
+* Returns: pointer to created matrix on success, NULL on failure
+*
+* note: data of returned matrix is a contiguous 1D array of rows * cols floats, zero-initialized by calloc
 */
 matrix* create_matrix(size_t rows, size_t cols) {
     if ((rows == 0 || cols == 0) || (rows > SIZE_MAX / cols)) return NULL;
@@ -43,8 +43,24 @@ matrix* create_matrix(size_t rows, size_t cols) {
     return m;
 }
 
+/* Copies all entries from source matrix into destination matrix
+ *
+ * Requires: both matrices have the same rows and cols values and were created with create_matrix()
+ * 
+ * Returns: 0 on success, -1 if either matrix is NULL or if their dimensions do not match
+ *
+ */
+int copy_matrix(matrix* destination, const matrix* source) {
+    if (destination == NULL || source == NULL) return -1;
+    if (destination->rows != source->rows || destination->cols != source->cols) return -1;
+        
+    // overflow pretected from defensive programming and calloc in create_matrix()
+    memcpy(destination->data, source->data, destination->rows * destination->cols * sizeof(float));
+
+    return 0;
+}
+
 void clear_matrix(matrix* matrix);
-void copy_matrix(matrix* destination, matrix* source);
 void fill_matrix(matrix* matrix, float x);
 void scale_matrix(matrix* matrix, float const);
 
